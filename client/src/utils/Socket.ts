@@ -1,4 +1,5 @@
 import React from "react";
 import { io } from "socket.io-client";
 
-export default io("http://localhost:4000");
+const isProduction = process.env.REACT_APP_NODE_ENV === "production";
+export default io(isProduction ? "" : "http://localhost:4000");
