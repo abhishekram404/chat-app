@@ -10,6 +10,8 @@ const CreateMessage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    handleBlur();
+
     if (!newText) {
       return;
     }
@@ -19,6 +21,13 @@ const CreateMessage = () => {
       username: username,
     });
     setNewText("");
+  };
+
+  const handleFocus = () => {
+    socket.emit("typing", { username: username });
+  };
+  const handleBlur = () => {
+    socket.emit("blurred", { username: username });
   };
   return (
     <form
@@ -31,6 +40,8 @@ const CreateMessage = () => {
         placeholder="Enter your message here..."
         onChange={handleChange}
         value={newText}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
       <button className="bg-purple outline-none p-2" type="submit">
         Send

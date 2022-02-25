@@ -57,6 +57,14 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("typing", ({ username }) => {
+    socket.broadcast.emit("user-typing", { username: username });
+  });
+
+  socket.on("blurred", ({ username }) => {
+    socket.broadcast.emit("user-typing-blurred", { username: username });
+  });
+
   socket.on("disconnect", () => {
     io.emit("server_message", {
       text: `${socket.username} left the chat.`,

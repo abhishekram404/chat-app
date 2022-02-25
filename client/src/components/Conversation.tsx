@@ -13,7 +13,7 @@ const Conversation = () => {
       username: string;
     }[]
   >([]);
-
+  const [isTyping, setTyping] = useState({ state: false, username: "" });
   useEffect(() => {
     socket.on("message", (message) => {
       setMessages([...messages, message]);
@@ -37,6 +37,31 @@ const Conversation = () => {
 
     return () => {
       socket.off("server_message");
+    };
+  });
+
+  useEffect(() => {
+    socket.on("user-typing", ({ username }: { username: string }) => {
+      setTyping({
+        state: true,
+        username: username,
+      });
+    });
+
+    return () => {
+      socket.off("user-typing");
+    };
+  });
+  useEffect(() => {
+    socket.on("user-typing-blurred", ({ username }: { username: string }) => {
+      setTyping({
+        state: false,
+        username: "",
+      });
+    });
+
+    return () => {
+      socket.off("user-typing-blurred");
     };
   });
   const conversationViewRef = useRef<any>(null);
@@ -68,6 +93,7 @@ const Conversation = () => {
             />
           )
       )}
+      {isTyping.state && `${isTyping.username} is typing`}
       <span ref={conversationViewRef}></span>
     </main>
   );
