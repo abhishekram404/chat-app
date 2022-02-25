@@ -22,6 +22,10 @@ var users = [];
 
 io.on("connection", (socket) => {
   socket.on("set-username", ({ username }) => {
+    // const usernameAlreadyTaken = users.some(
+    //   (user) => user.username === username
+    // );
+
     socket.username = username;
     socket.emit("username", { username: username });
     socket.emit("server_message", {

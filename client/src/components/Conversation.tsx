@@ -36,7 +36,7 @@ const Conversation = () => {
   });
 
   return (
-    <main className="max-h-[800px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 flex flex-col flex-1 scrollbar-hide rounded-lg">
+    <main className="max-h-[700px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 flex flex-col flex-1 scrollbar-hide rounded-lg">
       {messages.map(
         (message: {
           text: string;

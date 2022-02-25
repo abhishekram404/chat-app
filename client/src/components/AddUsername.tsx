@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import socket from "../utils/Socket";
 const AddUsername = () => {
   const [username, setUsername] = useState("");
@@ -13,6 +13,8 @@ const AddUsername = () => {
     socket.on("connect", () => {
       socket.emit("set-username", { username: username.trim() });
     });
+
+    socket.on("username-taken", () => console.log("Username taken"));
   };
 
   return (
