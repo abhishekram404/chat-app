@@ -4,7 +4,7 @@ import Layout from "./components/Layout";
 import socket from "./utils/Socket";
 import UserContext from "./utils/UserContext";
 function App() {
-  const [username, setUsername] = useState("adfa");
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     socket.on("username", (data: { username: string }) => {
