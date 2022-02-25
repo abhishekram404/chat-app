@@ -1,17 +1,75 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import socket from "../utils/Socket";
 import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
 
 const Conversation = () => {
+  const [messages, setMessages] = useState<
+    { text: string; id: string; self: boolean; serverMessage: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages([...messages, message]);
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  });
+
+  useEffect(() => {
+    socket.on("server_message", (message) => {
+      setMessages([...messages, message]);
+    });
+
+    return () => {
+      socket.off("server_message");
+    };
+  });
+
+  console.log(messages);
   return (
     <main className="max-h-[800px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 flex flex-col flex-1 scrollbar-hide rounded-lg">
-      <SentMessage message="Hello, Sandy!" name="You" />
-      <SentMessage message="How are you, bud?" name="You" />
-      <ReceivedMessage message="Hey, Rachel!" name="Sandy" />
-      <ReceivedMessage message="I'm good." name="Sandy" />
-      <ReceivedMessage />
+      {messages.map(
+        (message: {
+          text: string;
+          id: string;
+          self: boolean;
+          serverMessage: boolean;
+        }) =>
+          message.serverMessage ? (
+            <div className="text-center text-sm text-white/50">
+              {message.text}
+            </div>
+          ) : message.self ? (
+            <SentMessage
+              message={message.text}
+              key={message.text}
+              name={message.id}
+            />
+          ) : (
+            <ReceivedMessage
+              message={message.text}
+              key={message.text}
+              name={message.id}
+            />
+          )
+      )}
     </main>
   );
 };
 
 export default Conversation;
+
+//  {
+//    self ? (
+//      <SentMessage message={message.text} key={message.id} name={message.id} />
+//    ) : (
+//      <ReceivedMessage
+//        message={message.text}
+//        key={message.id}
+//        name={message.id}
+//      />
+//    );
+//  }
