@@ -13,8 +13,6 @@ const AddUsername = () => {
     socket.on("connect", () => {
       socket.emit("set-username", { username: username.trim() });
     });
-
-    socket.on("username-taken", () => console.log("Username taken"));
   };
 
   return (

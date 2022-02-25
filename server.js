@@ -38,7 +38,6 @@ io.on("connection", (socket) => {
     });
 
     users = [...users, { username: socket.username, id: socket.id }];
-    console.log(users);
   });
 
   socket.on("message", ({ text, id, username }) => {
@@ -64,7 +63,6 @@ io.on("connection", (socket) => {
       serverMessage: true,
     });
     users = users.filter((user) => user.id !== socket.id);
-    console.log(users);
   });
 });
 
