@@ -17,7 +17,7 @@ function App() {
 
   return (
     <UserContext.Provider value={{ username: username, id: socket.id }}>
-      <div className="App h-screen grid place-items-center bg-slate-900 min-h-screen">
+      <div className="App h-screen grid place-items-center bg-slate-900 min-h-screen w-full">
         {username ? <Layout /> : <AddUsername />}
       </div>
     </UserContext.Provider>

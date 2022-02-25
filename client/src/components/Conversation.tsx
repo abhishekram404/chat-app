@@ -70,7 +70,7 @@ const Conversation = () => {
     });
   const conversationViewRef = useRef<any>(null);
   return (
-    <main className="max-h-[700px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 pb-8 flex flex-col flex-1 scrollbar-hide rounded-lg transition-all">
+    <main className="sm:max-h-[500px] h-[500px] max-h-[95%]  bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 pb-8 flex flex-col flex-1 scrollbar-hide rounded-lg transition-all">
       {messages.map(
         (message: {
           text: string;
