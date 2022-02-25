@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import socket from "../utils/Socket";
 import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
+import Typing from "./Typing";
 
 const Conversation = () => {
   const [messages, setMessages] = useState<
@@ -13,13 +14,11 @@ const Conversation = () => {
       username: string;
     }[]
   >([]);
-
+  const [isTyping, setTyping] = useState({ state: false, username: "" });
   useEffect(() => {
     socket.on("message", (message) => {
       setMessages([...messages, message]);
-      conversationViewRef.current.scrollIntoView({
-        behavior: "smooth",
-      });
+      scrollToBottom();
     });
 
     return () => {
@@ -30,18 +29,48 @@ const Conversation = () => {
   useEffect(() => {
     socket.on("server_message", (message) => {
       setMessages([...messages, message]);
-      conversationViewRef.current.scrollIntoView({
-        behavior: "smooth",
-      });
+      scrollToBottom();
     });
 
     return () => {
       socket.off("server_message");
     };
   });
+
+  useEffect(() => {
+    socket.on("user-typing", ({ username }: { username: string }) => {
+      setTyping({
+        state: true,
+        username: username,
+      });
+      scrollToBottom();
+    });
+
+    return () => {
+      socket.off("user-typing");
+    };
+  });
+  useEffect(() => {
+    socket.on("user-typing-blurred", ({ username }: { username: string }) => {
+      setTyping({
+        state: false,
+        username: "",
+      });
+      scrollToBottom();
+    });
+
+    return () => {
+      socket.off("user-typing-blurred");
+    };
+  });
+
+  const scrollToBottom = () =>
+    conversationViewRef.current.scrollIntoView({
+      behavior: "smooth",
+    });
   const conversationViewRef = useRef<any>(null);
   return (
-    <main className="max-h-[700px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 flex flex-col flex-1 scrollbar-hide rounded-lg">
+    <main className="max-h-[700px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 pb-8 flex flex-col flex-1 scrollbar-hide rounded-lg transition-all">
       {messages.map(
         (message: {
           text: string;
@@ -68,21 +97,10 @@ const Conversation = () => {
             />
           )
       )}
+      {isTyping.state && <Typing username={isTyping.username} />}
       <span ref={conversationViewRef}></span>
     </main>
   );
 };
 
 export default Conversation;
-
-//  {
-//    self ? (
-//      <SentMessage message={message.text} key={message.id} name={message.id} />
-//    ) : (
-//      <ReceivedMessage
-//        message={message.text}
-//        key={message.id}
-//        name={message.id}
-//      />
-//    );
-//  }
