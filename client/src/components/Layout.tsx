@@ -1,15 +1,20 @@
-import React from "react";
-import Conversation from "./Conversation";
-import CreateMessage from "./CreateMessage";
-import Header from "./Header";
-
+import React, { Suspense } from "react";
+const Header = React.lazy(() => import("./Header"));
+const Conversation = React.lazy(() => import("./Conversation"));
+const CreateMessage = React.lazy(() => import("./CreateMessage"));
 const Layout = () => {
   return (
     <div className="max-w-[600px] min-w-[600px] bg-slate-800 p-3 rounded text-white">
       <div className="chat h-full flex flex-col">
-        <Header />
-        <Conversation />
-        <CreateMessage />
+        <Suspense fallback={<h2>Loading...</h2>}>
+          <Header />
+        </Suspense>
+        <Suspense fallback={<h2>Loading...</h2>}>
+          <Conversation />
+        </Suspense>
+        <Suspense fallback={<h2>Loading...</h2>}>
+          <CreateMessage />
+        </Suspense>
       </div>
     </div>
   );
