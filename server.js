@@ -18,21 +18,40 @@ const io = new Server(httpServer, {
   },
 });
 
+var users = [];
+
 io.on("connection", (socket) => {
-  socket.emit("server_message", {
-    text: "You joined the chat.",
-    serverMessage: true,
-  });
-  socket.broadcast.emit("server_message", {
-    text: "A new user  joined the chat.",
-    serverMessage: true,
+  socket.on("set-username", ({ username }) => {
+    // const usernameAlreadyTaken = users.some(
+    //   (user) => user.username === username
+    // );
+
+    socket.username = username;
+    socket.emit("username", { username: username });
+    socket.emit("server_message", {
+      text: "You joined the chat.",
+      serverMessage: true,
+    });
+    socket.broadcast.emit("server_message", {
+      text: `${socket?.username || "A new user"}  joined the chat.`,
+      serverMessage: true,
+    });
+
+    users = [...users, { username: socket.username, id: socket.id }];
   });
 
-  socket.on("message", ({ text, id }) => {
-    socket.emit("message", { text, id, self: true, serverMessage: false });
+  socket.on("message", ({ text, id, username }) => {
+    socket.emit("message", {
+      text,
+      id,
+      username: username === socket.username ? "You" : username,
+      self: true,
+      serverMessage: false,
+    });
     socket.broadcast.emit("message", {
       text,
       id,
+      username: username,
       self: false,
       serverMessage: false,
     });
@@ -40,9 +59,10 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     io.emit("server_message", {
-      text: "Someone left the chat.",
+      text: `${socket.username} left the chat.`,
       serverMessage: true,
     });
+    users = users.filter((user) => user.id !== socket.id);
   });
 });
 
