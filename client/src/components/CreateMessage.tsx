@@ -23,7 +23,7 @@ const CreateMessage = () => {
         onChange={handleChange}
         value={newText}
       />
-      <button className="bg-blue-700 p-2" type="submit">
+      <button className="bg-purple outline-none p-2" type="submit">
         Send
       </button>
     </form>
