@@ -11,12 +11,16 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("A new user joined the chat.");
-  io.emit("A new user  joined the chat.");
+  socket.emit("server_message", "You joined the chat.");
+  socket.broadcast.emit("server_message", "A new user  joined the chat.");
+
+  io.on("message", (message) => {
+    io.emit(message);
+  });
+  socket.emit("message", { text: "Hello world", id: socket.id });
 
   socket.on("disconnect", () => {
-    console.log("Someone left the chat.");
-    io.emit("Someone left the chat.");
+    io.emit("server_message", "Someone left the chat.");
   });
 });
 httpServer.listen(4000);

@@ -5,7 +5,7 @@ const SentMessage = ({
   name,
 }: {
   message?: string;
-  name?: string;
+  name?: string | number;
 }) => {
   return (
     <div className="self-end flex flex-col justify-end mb-2 max-w-[400px]">
