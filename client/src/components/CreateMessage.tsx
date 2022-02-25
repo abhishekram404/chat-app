@@ -1,14 +1,23 @@
-import React, { KeyboardEvent, useState } from "react";
+import React, { KeyboardEvent, useContext, useState } from "react";
 import socket from "../utils/Socket";
+import UserContext from "../utils/UserContext";
 
 const CreateMessage = () => {
+  const { username } = useContext(UserContext);
   const [newText, setNewText] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewText(e.target.value);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    socket.emit("message", { text: newText, id: socket.id });
+    if (!newText) {
+      return;
+    }
+    socket.emit("message", {
+      text: newText,
+      id: socket.id,
+      username: username,
+    });
     setNewText("");
   };
   return (

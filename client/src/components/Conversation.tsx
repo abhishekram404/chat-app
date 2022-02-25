@@ -5,12 +5,19 @@ import SentMessage from "./SentMessage";
 
 const Conversation = () => {
   const [messages, setMessages] = useState<
-    { text: string; id: string; self: boolean; serverMessage: boolean }[]
+    {
+      text: string;
+      id: string;
+      self: boolean;
+      serverMessage: boolean;
+      username: string;
+    }[]
   >([]);
 
   useEffect(() => {
     socket.on("message", (message) => {
       setMessages([...messages, message]);
+      console.log(message);
     });
 
     return () => {
@@ -28,7 +35,6 @@ const Conversation = () => {
     };
   });
 
-  console.log(messages);
   return (
     <main className="max-h-[800px] h-[500px] min-h-[500px] bg-slate-700 overflow-y-scroll overflow-x-hidden p-3 flex flex-col flex-1 scrollbar-hide rounded-lg">
       {messages.map(
@@ -37,6 +43,7 @@ const Conversation = () => {
           id: string;
           self: boolean;
           serverMessage: boolean;
+          username: string;
         }) =>
           message.serverMessage ? (
             <div className="text-center text-sm text-white/50">
@@ -46,13 +53,13 @@ const Conversation = () => {
             <SentMessage
               message={message.text}
               key={message.text}
-              name={message.id}
+              name={message.username}
             />
           ) : (
             <ReceivedMessage
               message={message.text}
               key={message.text}
-              name={message.id}
+              name={message.username}
             />
           )
       )}
